@@ -95,3 +95,5 @@ footer{background:#080e18;color:#9ba4b3;padding:40px 0 75px}
   .mobile-bar a{text-align:center;padding:14px;font-weight:700;color:var(--navy)}
   .mobile-bar a+ a{background:var(--navy);color:white}
 }
+
+.logo-img{width:170px;height:auto;display:block;object-fit:contain}.brand{display:block}.hero-content{padding-top:120px}@media(max-width:760px){.logo-img{width:135px}.hero-content{padding-top:105px}}
