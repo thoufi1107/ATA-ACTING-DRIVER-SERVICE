@@ -70,7 +70,7 @@
       <div class="booking-intro">
         <p class="eyebrow">ONLINE BOOKING</p>
         <h2>Book a driver<br><span>in a few steps.</span></h2>
-        <p>Choose your service, enter your trip details and send your booking request directly to ATA on WhatsApp.</p>
+        <p>Choose your service, enter your trip details and submit your booking request to ATA.</p>
         <div class="booking-note"><strong>Outstation bookings</strong><span>Fare is confirmed personally based on your trip details. No price is shown online.</span></div>
       </div>
 
@@ -92,6 +92,7 @@
         </div>
 
         <div id="hourlyFields">
+          <label>Pickup location<input id="localPickup" type="text" placeholder="e.g. Ramanathapuram, Coimbatore" required></label>
           <label>Duration
             <select id="duration">
               <option value="" selected disabled>Select hours</option>
@@ -117,7 +118,26 @@
 
         <div class="form-row">
           <label>Travel date<input id="date" type="date" required></label>
-          <label>Pickup time<input id="time" type="time" required></label>
+          <label class="time-picker-label">Pickup time
+            <div class="time-picker" id="timePicker" aria-label="Choose pickup time">
+              <select id="timeHour" aria-label="Hour" required>
+                <option value="" selected disabled>Hour</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                <option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+              <span class="time-colon">:</span>
+              <select id="timeMinute" aria-label="Minutes" required>
+                <option value="" selected disabled>Min</option>
+                <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
+              </select>
+              <div class="ampm-toggle" role="group" aria-label="AM or PM">
+                <button type="button" class="ampm-btn" data-period="AM" aria-pressed="false">AM</button>
+                <button type="button" class="ampm-btn" data-period="PM" aria-pressed="false">PM</button>
+              </div>
+              <input id="time" type="hidden" required>
+            </div>
+            <span class="time-hint">Select hour, minutes &amp; AM/PM</span>
+          </label>
         </div>
 
         <div class="form-row">
@@ -125,11 +145,40 @@
           <label>WhatsApp number<input id="phone" type="tel" inputmode="tel" placeholder="10-digit number" required></label>
         </div>
 
-        <label>Car details<input id="car" type="text" placeholder="e.g. Hyundai Creta — Automatic" required></label>
-        <label>Additional requirements<textarea id="notes" rows="3" placeholder="Anything we should know? (optional)"></textarea></label>
+        <div class="car-details-block">
+          <p class="form-section-title">Car details <span>(optional)</span></p>
+          <div class="form-row">
+            <label>Car type
+              <select id="carType">
+                <option value="Not specified" selected>Select car type</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Luxury">Luxury</option>
+              </select>
+            </label>
+            <label>Fuel type
+              <select id="fuelType">
+                <option value="Not specified" selected>Select fuel type</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="EV">EV</option>
+              </select>
+            </label>
+          </div>
+          <label>Transmission
+            <select id="transmission">
+              <option value="Not specified" selected>Select transmission</option>
+              <option value="Manual">Manual</option>
+              <option value="Automatic">Automatic</option>
+            </select>
+          </label>
+        </div>
+
+        <label>Additional requirements <span class="optional-label">(optional)</span><textarea id="notes" rows="3" placeholder="Anything we should know?"></textarea></label>
 
         <div id="pricePreview" class="price-preview hidden"></div>
-        <button class="btn btn-gold booking-submit" type="submit">Send Booking Request on WhatsApp</button>
+        <button class="btn btn-gold booking-submit" type="submit">Submit Booking Request</button>
         <p class="booking-disclaimer">Your request will be sent to ATA for confirmation. Booking is confirmed only after we respond.</p>
       </form>
     </div>
@@ -198,6 +247,37 @@ const duration = document.getElementById('duration');
 const pricePreview = document.getElementById('pricePreview');
 const returnDateWrap = document.getElementById('returnDateWrap');
 const returnDate = document.getElementById('returnDate');
+const localPickup = document.getElementById('localPickup');
+const timeInput = document.getElementById('time');
+const timeHour = document.getElementById('timeHour');
+const timeMinute = document.getElementById('timeMinute');
+const ampmButtons = document.querySelectorAll('.ampm-btn');
+let selectedPeriod = '';
+
+function syncPickupTime(){
+  const h = timeHour.value;
+  const m = timeMinute.value;
+  if (h && m && selectedPeriod) {
+    let hh = Number(h);
+    if (selectedPeriod === 'AM' && hh === 12) hh = 0;
+    if (selectedPeriod === 'PM' && hh !== 12) hh += 12;
+    timeInput.value = String(hh).padStart(2,'0') + ':' + m;
+  } else {
+    timeInput.value = '';
+  }
+}
+
+timeHour.addEventListener('change', syncPickupTime);
+timeMinute.addEventListener('change', syncPickupTime);
+ampmButtons.forEach(btn => btn.addEventListener('click', () => {
+  selectedPeriod = btn.dataset.period;
+  ampmButtons.forEach(b => {
+    const active = b === btn;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+  syncPickupTime();
+}));
 
 service.addEventListener('change', () => {
   const out = service.value === 'Outstation Driver';
@@ -205,6 +285,7 @@ service.addEventListener('change', () => {
   hourlyFields.classList.toggle('hidden', out);
   outstationFields.classList.toggle('hidden', !out);
   duration.required = !out;
+  localPickup.required = !out;
   document.getElementById('pickup').required = out;
   document.getElementById('drop').required = out;
   pricePreview.classList.add('hidden');
@@ -235,31 +316,41 @@ duration.addEventListener('change', () => {
   }
 });
 
+function formatPickupTime(){
+  if (!timeHour.value || !timeMinute.value || !selectedPeriod) return 'Not selected';
+  return timeHour.value + ':' + timeMinute.value + ' ' + selectedPeriod;
+}
+
 document.getElementById('bookingForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const s = service.value;
+  const carType = document.getElementById('carType').value;
+  const fuelType = document.getElementById('fuelType').value;
+  const transmission = document.getElementById('transmission').value;
   const lines = [
     '🚗 ATA DRIVER BOOKING REQUEST',
     '',
     'Service: ' + s
   ];
   if (s === 'Hourly Driver') {
+    lines.push('Pickup: ' + localPickup.value);
     lines.push('Duration: ' + duration.value);
   } else {
     lines.push('Trip Type: ' + document.getElementById('tripType').value);
     lines.push('Pickup: ' + document.getElementById('pickup').value);
     lines.push('Drop: ' + document.getElementById('drop').value);
+    if (returnDate.value) lines.push('Return Date: ' + returnDate.value);
   }
   lines.push('Date: ' + document.getElementById('date').value);
-  lines.push('Time: ' + document.getElementById('time').value);
+  lines.push('Pickup Time: ' + formatPickupTime());
   lines.push('Name: ' + document.getElementById('name').value);
   lines.push('WhatsApp: ' + document.getElementById('phone').value);
-  lines.push('Car: ' + document.getElementById('car').value);
+  lines.push('Car Type: ' + carType);
+  lines.push('Fuel: ' + fuelType);
+  lines.push('Transmission: ' + transmission);
   const notes = document.getElementById('notes').value.trim();
   if (notes) lines.push('Additional requirements: ' + notes);
-  if (s === 'Outstation Driver') lines.push('', 'Please confirm availability and final fare.');
-  const url = 'https://wa.me/918667266472?text=' + encodeURIComponent(lines.join('\n'));
-  window.open(url, '_blank');
+  alert('Thank you! Your booking request has been submitted. ATA will contact you shortly.');
 });
 </script>
 </body>
