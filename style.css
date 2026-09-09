@@ -16,8 +16,13 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",Arial,sans-serif;line-height:1.6}
 a{text-decoration:none}
 .container{width:min(1120px,88%);margin:auto}
-.hero{background:var(--navy);color:white;min-height:720px;position:relative;overflow:hidden}
-.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.025),transparent 45%);pointer-events:none}
+ .hero{background:var(--navy);color:white;min-height:760px;position:relative;overflow:hidden;isolation:isolate}
+.hero-cinematic{position:absolute;inset:-5%;z-index:-3;background-image:url("hero-cinematic.png");background-size:cover;background-position:center right;animation:heroDrive 14s ease-in-out infinite alternate;transform-origin:center center;will-change:transform,background-position}
+.hero-cinematic:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,10,18,.86) 0%,rgba(5,10,18,.58) 34%,rgba(5,10,18,.08) 68%,rgba(5,10,18,.12) 100%),linear-gradient(0deg,rgba(4,8,15,.52),transparent 42%);}
+.hero-motion-glow{position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(105deg,transparent 42%,rgba(225,201,143,.08) 49%,transparent 56%);background-size:220% 100%;animation:lightSweep 7s linear infinite}
+.hero:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 72% 58%,rgba(225,201,143,.13),transparent 28%),linear-gradient(115deg,rgba(255,255,255,.025),transparent 45%);pointer-events:none}
+@keyframes heroDrive{0%{transform:scale(1.03) translate3d(1.2%,0,0);background-position:51% center}50%{transform:scale(1.06) translate3d(-1%, -0.3%,0);background-position:54% center}100%{transform:scale(1.04) translate3d(1%,0.2%,0);background-position:51% center}}
+@keyframes lightSweep{0%{background-position:120% 0}100%{background-position:-120% 0}}
 .nav{height:92px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
 .brand{color:white;display:flex;flex-direction:column}
 .brand-mark{font-size:29px;font-weight:700;letter-spacing:3px;line-height:1}
@@ -117,3 +122,18 @@ footer{background:#080e18;color:#9ba4b3;padding:40px 0 75px}
 .ampm-btn.active{background:#e1c98f;color:#0b1220;box-shadow:0 3px 12px rgba(225,201,143,.22)}
 .time-hint{display:block;font-size:.72rem;color:#858c98;font-weight:500;margin-top:7px}
 @media(max-width:760px){.time-picker{grid-template-columns:minmax(58px,1fr) auto minmax(58px,1fr) minmax(116px,1.15fr);gap:5px;padding:6px}.time-picker select{padding:12px 6px!important;font-size:.9rem}.ampm-btn{min-height:42px;font-size:.76rem}.time-colon{font-size:20px}}
+
+.field-label{display:grid;gap:8px;margin-bottom:16px;font-size:.82rem;font-weight:700;color:#303744}
+.form-error{margin:10px 0 14px;padding:12px 14px;border-radius:10px;background:#fff0f0;border:1px solid #e8bcbc;color:#9a3030;font-size:.85rem;font-weight:700}
+.success-box{margin:10px 0 14px;padding:14px 16px;border-radius:12px;background:#eef8f1;border:1px solid #b9d9c2;color:#245c34;display:grid;gap:4px;font-size:.86rem}
+.booking-submit:disabled{opacity:.75;cursor:not-allowed;transform:none}
+@media(max-width:760px){.time-picker{grid-template-columns:minmax(56px,1fr) 12px minmax(56px,1fr) minmax(112px,1.2fr)}}
+
+/* Automatic cinematic motion hero: no video or click required */
+@media(max-width:760px){
+  .hero{min-height:720px}
+  .hero-cinematic{background-position:67% center;animation:heroDriveMobile 12s ease-in-out infinite alternate}
+  .hero-cinematic:after{background:linear-gradient(180deg,rgba(5,10,18,.72) 0%,rgba(5,10,18,.48) 38%,rgba(5,10,18,.10) 72%,rgba(5,10,18,.58) 100%)}
+}
+@keyframes heroDriveMobile{0%{transform:scale(1.07) translate3d(1%,0,0);background-position:66% center}50%{transform:scale(1.11) translate3d(-1.5%,-.4%,0);background-position:69% center}100%{transform:scale(1.08) translate3d(1%,.2%,0);background-position:66% center}}
+@media(prefers-reduced-motion:reduce){.hero-cinematic,.hero-motion-glow{animation:none!important}}
