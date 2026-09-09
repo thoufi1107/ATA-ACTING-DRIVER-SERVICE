@@ -15,7 +15,7 @@
     <a class="brand" href="#">
       <img src="ATA_3D_Logo.png" alt="ATA Acting Driving Service 3D logo" class="logo-img">
     </a>
-    <a class="nav-call" href="tel:+918667266472">Call Now</a>
+    <div class="nav-actions"><a class="nav-book" href="#booking">Book a Driver</a><a class="nav-call" href="tel:+918667266472">Call Now</a></div>
   </nav>
 
   <div class="hero-content container">
@@ -25,7 +25,7 @@
 
     <div class="hero-actions">
       <a class="btn btn-gold" href="tel:+918667266472">Call 8667266472</a>
-      <a class="btn btn-outline" href="https://wa.me/918667266472">WhatsApp Us</a>
+      <a class="btn btn-outline" href="#booking">Book a Driver</a>
     </div>
   </div>
 </header>
@@ -58,16 +58,80 @@
 
         <article class="service-card featured">
           <span class="number">02</span>
-          <h3>Daily Driver</h3>
-          <p>A dependable driver for your full-day personal or business requirements.</p>
-        </article>
-
-        <article class="service-card">
-          <span class="number">03</span>
           <h3>Outstation</h3>
           <p>Professional driving support for comfortable long-distance journeys.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <section class="booking section" id="booking">
+    <div class="container booking-grid">
+      <div class="booking-intro">
+        <p class="eyebrow">ONLINE BOOKING</p>
+        <h2>Book a driver<br><span>in a few steps.</span></h2>
+        <p>Choose your service, enter your trip details and send your booking request directly to ATA on WhatsApp.</p>
+        <div class="booking-note"><strong>Outstation bookings</strong><span>Fare is confirmed personally based on your trip details. No price is shown online.</span></div>
+      </div>
+
+      <form class="booking-form" id="bookingForm">
+        <div class="form-row">
+          <label>Service
+            <select id="service" required>
+              <option value="" selected disabled>Select service</option>
+              <option value="Hourly Driver">Hourly Driver</option>
+              <option value="Outstation Driver">Outstation Driver</option>
+            </select>
+          </label>
+          <label id="tripTypeWrap" class="hidden">Trip type
+            <select id="tripType">
+              <option value="One Way Drop">One Way Drop</option>
+              <option value="Round Trip">Round Trip</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="hourlyFields">
+          <label>Duration
+            <select id="duration">
+              <option value="" selected disabled>Select hours</option>
+              <option value="1–3 Hours — ₹450">1–3 Hours — ₹450</option>
+              <option value="4 Hours — ₹500">4 Hours — ₹500</option>
+              <option value="5 Hours — ₹600">5 Hours — ₹600</option>
+              <option value="6 Hours — ₹650">6 Hours — ₹650</option>
+              <option value="7 Hours — ₹700">7 Hours — ₹700</option>
+              <option value="8 Hours — ₹750">8 Hours — ₹750</option>
+              <option value="9 Hours — ₹800">9 Hours — ₹800</option>
+              <option value="10 Hours — ₹850">10 Hours — ₹850</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="outstationFields" class="hidden">
+          <div class="form-row">
+            <label>Pickup location<input id="pickup" type="text" placeholder="e.g. Ramanathapuram, Coimbatore"></label>
+            <label>Drop location<input id="drop" type="text" placeholder="e.g. Madiwala, Bangalore"></label>
+          </div>
+          <p class="form-hint">For round trips, enter the return date if applicable.</p>
+        </div>
+
+        <div class="form-row">
+          <label>Travel date<input id="date" type="date" required></label>
+          <label>Pickup time<input id="time" type="time" required></label>
+        </div>
+
+        <div class="form-row">
+          <label>Your name<input id="name" type="text" placeholder="Full name" required></label>
+          <label>WhatsApp number<input id="phone" type="tel" inputmode="tel" placeholder="10-digit number" required></label>
+        </div>
+
+        <label>Car details<input id="car" type="text" placeholder="e.g. Hyundai Creta — Automatic" required></label>
+        <label>Additional requirements<textarea id="notes" rows="3" placeholder="Anything we should know? (optional)"></textarea></label>
+
+        <div id="pricePreview" class="price-preview hidden"></div>
+        <button class="btn btn-gold booking-submit" type="submit">Send Booking Request on WhatsApp</button>
+        <p class="booking-disclaimer">Your request will be sent to ATA for confirmation. Booking is confirmed only after we respond.</p>
+      </form>
     </div>
   </section>
 
@@ -87,7 +151,7 @@
       <h2>Simple. Reliable.<br>Professional.</h2>
       <div class="why-grid">
         <div><strong>Professional service</strong><p>Focused on dependable driving and customer experience.</p></div>
-        <div><strong>Flexible bookings</strong><p>Hourly, daily and outstation requirements are welcome.</p></div>
+        <div><strong>Flexible bookings</strong><p>Hourly and outstation requirements are welcome.</p></div>
         <div><strong>Easy to contact</strong><p>Call or WhatsApp us directly for enquiries and bookings.</p></div>
       </div>
     </div>
@@ -125,5 +189,58 @@
   <a href="https://wa.me/918667266472">WhatsApp</a>
 </div>
 
+<script>
+const service = document.getElementById('service');
+const tripTypeWrap = document.getElementById('tripTypeWrap');
+const hourlyFields = document.getElementById('hourlyFields');
+const outstationFields = document.getElementById('outstationFields');
+const duration = document.getElementById('duration');
+const pricePreview = document.getElementById('pricePreview');
+
+service.addEventListener('change', () => {
+  const out = service.value === 'Outstation Driver';
+  tripTypeWrap.classList.toggle('hidden', !out);
+  hourlyFields.classList.toggle('hidden', out);
+  outstationFields.classList.toggle('hidden', !out);
+  duration.required = !out;
+  document.getElementById('pickup').required = out;
+  document.getElementById('drop').required = out;
+  pricePreview.classList.add('hidden');
+});
+
+duration.addEventListener('change', () => {
+  if (service.value === 'Hourly Driver') {
+    pricePreview.textContent = 'Driver fare: ' + duration.value;
+    pricePreview.classList.remove('hidden');
+  }
+});
+
+document.getElementById('bookingForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const s = service.value;
+  const lines = [
+    '🚗 ATA DRIVER BOOKING REQUEST',
+    '',
+    'Service: ' + s
+  ];
+  if (s === 'Hourly Driver') {
+    lines.push('Duration: ' + duration.value);
+  } else {
+    lines.push('Trip Type: ' + document.getElementById('tripType').value);
+    lines.push('Pickup: ' + document.getElementById('pickup').value);
+    lines.push('Drop: ' + document.getElementById('drop').value);
+  }
+  lines.push('Date: ' + document.getElementById('date').value);
+  lines.push('Time: ' + document.getElementById('time').value);
+  lines.push('Name: ' + document.getElementById('name').value);
+  lines.push('WhatsApp: ' + document.getElementById('phone').value);
+  lines.push('Car: ' + document.getElementById('car').value);
+  const notes = document.getElementById('notes').value.trim();
+  if (notes) lines.push('Additional requirements: ' + notes);
+  if (s === 'Outstation Driver') lines.push('', 'Please confirm availability and final fare.');
+  const url = 'https://wa.me/918667266472?text=' + encodeURIComponent(lines.join('\n'));
+  window.open(url, '_blank');
+});
+</script>
 </body>
 </html>
