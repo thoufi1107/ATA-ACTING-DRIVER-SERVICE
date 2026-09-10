@@ -34,7 +34,7 @@
       <div class="hero-meta"><span>● Available 24/7</span><span>Coimbatore & surrounding areas</span></div>
     </div>
     <div class="scene" aria-label="Animated premium car scene">
-      <div class="stars"></div><div class="city"></div><div class="road"></div><div class="road-line"></div>
+      <div class="stars"></div><div class="city"></div><div class="distant-lights"></div><div class="road"></div><div class="road-line"></div><div class="speed-streak s1"></div><div class="speed-streak s2"></div><div class="speed-streak s3"></div>
       <div class="car-wrap">
         <div class="car-shadow"></div>
         <div class="car">
@@ -97,7 +97,7 @@
       <div class="form-row"><label for="name">Your name<input id="name" type="text" placeholder="Full name" required autocomplete="name"></label><label for="phone">WhatsApp number<input id="phone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit number" required autocomplete="tel"></label></div>
       <div class="car-details-block"><p class="form-section-title">Car details <span>(optional)</span></p><div class="form-row"><label for="carBrand">Car brand<select id="carBrand"><option value="">Select car brand</option></select></label><label for="carModel">Car model<select id="carModel" disabled><option value="">Select brand first</option></select></label></div><div class="form-row"><label for="carType">Car type<select id="carType"><option value="">Select car type</option><option>Hatchback</option><option>Sedan</option><option>SUV</option><option>Luxury</option></select></label><label for="fuelType">Fuel type<select id="fuelType"><option value="">Select fuel type</option><option>Petrol</option><option>Diesel</option><option>EV</option></select></label></div><label for="transmission">Transmission<select id="transmission"><option value="">Select transmission</option><option>Manual</option><option>Automatic</option></select></label></div>
       <label for="notes">Additional requirements <span class="optional-label">(optional)</span><textarea id="notes" rows="3" placeholder="Anything we should know?"></textarea></label>
-      <div id="pricePreview" class="price-preview hidden" aria-live="polite"></div><div id="formError" class="form-error hidden" role="alert"></div><div id="successBox" class="success-box hidden" role="status"><strong>Booking request submitted successfully.</strong><span>ATA will contact you shortly to confirm your booking.</span></div>
+      <div id="pricePreview" class="price-preview hidden" aria-live="polite"></div><div id="formError" class="form-error hidden" role="alert"></div><div id="successBox" class="success-box hidden" role="status"><strong>Booking details are ready in WhatsApp.</strong><span>WhatsApp will open next. Tap <b>Send</b> to send this request directly to ATA.</span></div>
       <button class="btn gold booking-submit" type="submit">Submit Booking Request</button><p class="booking-disclaimer">Booking is confirmed only after ATA responds.</p>
     </form>
   </div>
@@ -263,10 +263,50 @@
       if (tripType.value === 'Round Trip' && returnDate.value < date.value) return showError('Return date cannot be before the travel date.');
     }
 
+    const car = $('carBrand').value || 'Not specified';
+    const model = $('carModel').value || 'Not specified';
+    const carType = $('carType').value || 'Not specified';
+    const fuel = $('fuelType').value || 'Not specified';
+    const transmission = $('transmission').value || 'Not specified';
+    const name = $('name').value.trim();
+    const notes = $('notes').value.trim() || 'None';
+    const pickupLocation = service.value === 'Hourly Driver' ? localPickup.value.trim() : pickup.value.trim();
+    const dropLocation = service.value === 'Outstation Driver' ? drop.value.trim() : '—';
+    const fare = service.value === 'Hourly Driver' && duration.value ? duration.value : 'Fare to be confirmed by ATA';
+    const returnText = service.value === 'Outstation Driver' && tripType.value === 'Round Trip' ? returnDate.value : '—';
+    const message = [
+      '🚗 *ATA ONLINE BOOKING REQUEST*',
+      '',
+      '*Customer Details*',
+      'Name: ' + name,
+      'WhatsApp: ' + phone,
+      '',
+      '*Trip Details*',
+      'Service: ' + service.value,
+      'Pickup: ' + pickupLocation,
+      'Drop: ' + dropLocation,
+      'Travel Date: ' + date.value,
+      'Pickup Time: ' + displayTime(),
+      'Duration/Fare: ' + fare,
+      'Trip Type: ' + (service.value === 'Outstation Driver' ? tripType.value : 'Local'),
+      'Return Date: ' + returnText,
+      '',
+      '*Car Details*',
+      'Brand: ' + car,
+      'Model: ' + model,
+      'Type: ' + carType,
+      'Fuel: ' + fuel,
+      'Transmission: ' + transmission,
+      '',
+      'Additional Requirements: ' + notes,
+      '',
+      'Please confirm availability and fare. — ATA Acting Driving Service'
+    ].join('\n');
+    const waUrl = 'https://wa.me/918667266472?text=' + encodeURIComponent(message);
     successBox.classList.remove('hidden');
-    form.querySelector('.booking-submit').disabled = true;
-    form.querySelector('.booking-submit').textContent = 'Request Submitted';
+    form.querySelector('.booking-submit').textContent = 'Opening WhatsApp…';
     successBox.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(() => { window.location.href = waUrl; }, 350);
   });
 })();
 </script>

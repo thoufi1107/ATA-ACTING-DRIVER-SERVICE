@@ -12,3 +12,26 @@
 @keyframes carDrive{0%,100%{transform:translateX(-2%) translateY(2px)}50%{transform:translateX(12%) translateY(-2px)}}@keyframes flag{0%,100%{transform:rotate(1deg) skewY(0)}50%{transform:rotate(-2deg) skewY(5deg) translateY(-2px)}}@keyframes roadmove{to{transform:translateX(30%)}}@media(prefers-reduced-motion:reduce){.car-wrap,.banner,.road-line{animation:none}}
 @media(max-width:850px){.nav-links{display:none}.nav-call{margin-left:auto}.hero{padding-top:105px;min-height:auto}.hero-grid{grid-template-columns:1fr}.hero-copy{padding:20px 0}.scene{height:430px}.split,.booking-shell,.area-panel{grid-template-columns:1fr;gap:35px}.feature-row,.why-grid,.price-grid{grid-template-columns:1fr 1fr}.service-grid{grid-template-columns:1fr}.pricing-head,.cta-inner{display:block}.cta-actions{margin-top:28px}.section{padding:85px 0}}
 @media(max-width:560px){.container{width:90%}.nav{min-height:72px}.brand,.logo-img{width:105px}.nav-call{padding:10px 12px;font-size:11px}.hero h1{font-size:46px}.hero-copy>p{font-size:15px}.scene{height:330px;border-radius:20px}.car-wrap{width:95%;left:-2%}.banner{left:8%;width:52%;font-size:8px}.car{left:23%;width:67%}.feature-row,.why-grid,.price-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.booking-form{padding:19px}.time-picker{grid-template-columns:1fr auto 1fr}.ampm-toggle{grid-column:1/-1}.area-panel{padding:32px}.footer-inner{display:block}.footer-contact{margin-top:20px}.mobile-bar{position:fixed;display:grid;grid-template-columns:1fr 1.35fr 1fr;left:0;right:0;bottom:0;z-index:50;background:rgba(4,6,9,.94);backdrop-filter:blur(15px);border-top:1px solid rgba(255,255,255,.1)}.mobile-bar a{padding:14px 4px;text-align:center;color:#fff;text-decoration:none;font-size:11px;font-weight:700;border-right:1px solid rgba(255,255,255,.08)}.mobile-bar a:nth-child(2){background:var(--gold);color:#080a0d}.copyright{padding-bottom:20px}}
+
+/* Premium cinematic motion upgrade */
+.scene{transform-style:preserve-3d}
+.city{animation:cityDrift 8s ease-in-out infinite alternate}
+.distant-lights{position:absolute;left:0;right:0;bottom:34%;height:20%;opacity:.45;background:radial-gradient(circle at 15% 70%,#f5d77b 0 1px,transparent 3px),radial-gradient(circle at 32% 45%,#fff 0 1px,transparent 3px),radial-gradient(circle at 54% 68%,#f5d77b 0 1px,transparent 3px),radial-gradient(circle at 73% 38%,#fff 0 1px,transparent 3px),radial-gradient(circle at 88% 63%,#f5d77b 0 1px,transparent 3px);animation:lightsDrift 3s linear infinite}
+.speed-streak{position:absolute;height:2px;border-radius:99px;background:linear-gradient(90deg,transparent,rgba(243,217,138,.9),transparent);opacity:.65;transform:skewX(-18deg);animation:streak 1.15s linear infinite}
+.s1{width:34%;left:-38%;bottom:31%}.s2{width:24%;left:-28%;bottom:26%;animation-delay:.35s}.s3{width:30%;left:-34%;bottom:38%;animation-delay:.7s}
+.car-wrap{animation:carDrive 4.6s cubic-bezier(.45,.05,.55,.95) infinite}
+.car{animation:carBob .55s ease-in-out infinite alternate}
+.banner{animation:flag 1.05s ease-in-out infinite;box-shadow:0 8px 22px rgba(0,0,0,.28)}
+.banner-pole{animation:poleSway 1.05s ease-in-out infinite}
+.lamp{animation:headlightPulse 1.4s ease-in-out infinite}
+.road-line{animation:roadmove .72s linear infinite}
+@keyframes carDrive{0%{transform:translateX(-8%) translateY(3px)}35%{transform:translateX(3%) translateY(0)}65%{transform:translateX(14%) translateY(-2px)}100%{transform:translateX(23%) translateY(2px)}}
+@keyframes carBob{from{transform:rotateY(-8deg) translateY(1px)}to{transform:rotateY(-8deg) translateY(-2px)}}
+@keyframes flag{0%,100%{transform:rotate(1deg) skewY(0) scaleX(1);border-radius:2px}25%{transform:rotate(-1deg) skewY(3deg) scaleX(.985);border-radius:5px 2px 7px 2px}50%{transform:rotate(2deg) skewY(-4deg) scaleX(1.015);border-radius:2px 6px 2px 8px}75%{transform:rotate(-2deg) skewY(4deg) scaleX(.99);border-radius:7px 2px 6px 2px}}
+@keyframes poleSway{50%{transform:rotate(-9deg)}}
+@keyframes headlightPulse{50%{box-shadow:0 0 34px 8px rgba(255,224,130,.38)}}
+@keyframes roadmove{to{transform:translateX(48%)}}
+@keyframes streak{0%{transform:translateX(0) skewX(-18deg);opacity:0}15%{opacity:.7}100%{transform:translateX(440px) skewX(-18deg);opacity:0}}
+@keyframes cityDrift{to{transform:translateX(-10px)}}
+@keyframes lightsDrift{to{transform:translateX(-35px)}}
+@media(prefers-reduced-motion:reduce){.city,.distant-lights,.speed-streak,.car-wrap,.car,.banner,.banner-pole,.lamp,.road-line{animation:none!important}}
